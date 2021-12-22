@@ -1,54 +1,32 @@
-import { Component } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HabitService } from '../habit.service';
 
 @Component({
   selector: 'app-habit-list',
   template: `
     <h2>Habits</h2>
-    <form [formGroup]="habitForm" (ngSubmit)="onSubmit(habitForm.value)">
-      <input type="text" placeholder="Add habit" formControlName="title" />
-      <button type="submit">Add</button>
-    </form>
+    <app-habit-form (addHabit)="onAddHabit($event)"></app-habit-form>
     <ul>
       <app-habit-item 
-      *ngFor="let habit of habits"
+      *ngFor="let habit of habits | async"
       [habit]="habit"
       ></app-habit-item>
     </ul>
   `,
   styles: []
 })
-export class HabitListComponent {
-  habitForm:any;
-  habits = [
-    {
-      id: 1,
-      title: 'Check in with parents once a week'
-    },
-    {
-      id: 2,
-      title: 'Record 2 videos per day'
-    },
-    {
-      id: 3,
-      title: 'Work on side project 5 hours/week'
-    },
-    {
-      id: 4,
-      title: 'Write for 20 minutes a day'
-    }
-  ];
-  constructor(private formBuilder: FormBuilder) {
-    this.habitForm = this.formBuilder.group({
-      title: '',
-    });
-   }
+export class HabitListComponent implements OnInit {
+  habits: Observable<any> | undefined;
+  
+  constructor(private habitService: HabitService){}
+  
+  ngOnInit(): void {
+    this.habits = this.habitService.getHabits();
+  }
 
-   onSubmit(newHabit:any) {
-     const id = this.habits.length + 1;
-     newHabit.id = id;
-     this.habits.push(newHabit);
-     this.habitForm.reset();
+   onAddHabit(newHabit:any) {
+    this.habitService.addHabit(newHabit);
    }
 
 }
