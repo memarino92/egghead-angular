@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Habit } from '../habit';
 
 @Component({
   selector: 'app-habit-item',
   template: `
-            <li>{{ habit.title }}</li>
+            <li >
+              {{ habit.title }}
+            </li>
 
   `,
   styles: [
@@ -11,7 +14,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class HabitItemComponent implements OnInit {
   @Input()
-  habit:any;
+  habit!: Habit;
   
   constructor() { }
 
